@@ -1,8 +1,8 @@
 import pandas as pd
-import requests
+import requests, os, time
 from dotenv import load_dotenv
-import os
 from collections import defaultdict
+from datetime import datetime, timedelta
 
 
 class API_Request:
@@ -72,9 +72,12 @@ class API_Request:
             # Save dataframe as csv
             df.to_csv(f'data/weather_condition/{tm if tm else 'test'}.csv', index=False, encoding='utf-8-sig')
 
+            return True
+
         # Exception catcher
         except Exception as e:
             print(f'Error detected : {e}')
+            return False
 
 
 
@@ -149,13 +152,61 @@ class API_Request:
             # Save dataframe as csv
             df.to_csv('data/stn_info.csv', index=False, encoding='utf-8-sig')
 
+            return True
+
         # Error Catcher
         except Exception as e:
             print(f'Error detected : {e}')
+            return False
 
         
-        
+    def request_api_loop(self, initial_date, end_date, authKey=''):
+        '''
+            Run the request api weather class for duration(initial date ~ end date)
 
+            param:
+                initial_date : first day for request
+                end_date : last day for request
+                authKey : API Key
+        '''
+
+        # Set the format for Date
+        fmt = "%Y-%m-%d" if "-" in initial_date else "%Y%m%d"
+
+        # Cast initial and end date into datetime
+        initial_date = datetime.strptime(initial_date, fmt)
+        end_date = datetime.strptime(end_date, fmt)
+
+        # Will be used for time calculation
+        start = time.time()
+
+        # Loop for set dates
+        while initial_date <= end_date:
+            
+            print(f'[Fetching : {initial_date}] initiated . . .')
+
+            # set the datetime into yyyymmdd format for api request
+            yyyymmdd = initial_date.strftime("%Y%m%d")
+
+            # run request
+            result = self.request_api_weather(tm=yyyymmdd, authKey=authKey)
+
+            # Debug -> to see how requests going on
+            if result:
+                print(f'Succeed to get respond from API request at {yyyymmdd}')
+            else:
+                print(f'Request Fail at {yyyymmdd}')
+                break
+
+            # increase date by a day
+            initial_date += timedelta(days=1)
+
+        # end time for time cacluation
+        end = time.time()
+
+        # Calculate time spent
+        elapse = end - start
+        print(f'Total Run time : {elapse: .2f} sec')
 
 
     def __init__(self):
@@ -167,7 +218,7 @@ class API_Request:
         #self.request_api_location(authKey=self.api_key)
 
         # Run to get weather api
-        self.request_api_weather(authKey=self.api_key)
+        self.request_api_loop('2015-01-01','2025-10-25',self.api_key)
 
 
 
