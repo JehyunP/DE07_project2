@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 
 class csv_merge:
-    def merge(self, path):
+    def merge(self, path, type):
         '''
             Merge all the csv file in the path then create a csv file 
 
@@ -30,7 +30,7 @@ class csv_merge:
         merged_df = pd.concat(df_lists, ignore_index=True)
 
         # create merged data.csv
-        merged_df.to_csv('data/merged.csv', index=False, encoding='utf-8-sig')
+        merged_df.to_csv(f'data/merged_{type}.csv', index=False, encoding='utf-8-sig')
 
         # Debug : to see merged csv
         print(f'Merged datasets completed!\n{merged_df.head(5)}')
@@ -39,10 +39,11 @@ class csv_merge:
     def __init__(self):
         # Read Path from .env
         load_dotenv()
-        files_path = os.getenv('FILES_PATH')
-
+        files_path_weather = os.getenv('FILES_PATH_weather')
+        files_path_marine = os.getenv('FILES_PATH_marine')
         # run function -> merge all csv
-        self.merge(files_path)
+        #self.merge(files_path_weather, 'SFC')
+        self.merge(files_path_marine, 'marine')
 
 
 if __name__ == '__main__':
