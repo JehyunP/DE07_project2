@@ -23,12 +23,14 @@ class csv_merge:
             file_path = os.path.join(path, file)
             df = pd.read_csv(file_path)
             df_lists.append(df)
+            print('-------------------- working --------------------')
+            
 
         # merge all csv files in the list
         merged_df = pd.concat(df_lists, ignore_index=True)
 
         # create merged data.csv
-        merged_df.to_csv('data/data.csv', index=False, encoding='utf-8-sig')
+        merged_df.to_csv('data/merged.csv', index=False, encoding='utf-8-sig')
 
         # Debug : to see merged csv
         print(f'Merged datasets completed!\n{merged_df.head(5)}')
