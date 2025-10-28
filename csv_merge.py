@@ -41,9 +41,11 @@ class csv_merge:
         load_dotenv()
         files_path_weather = os.getenv('FILES_PATH_weather')
         files_path_marine = os.getenv('FILES_PATH_marine')
+        files_path_marine_depth = os.getenv('FILES_PATH_marine_depth')
         # run function -> merge all csv
-        #self.merge(files_path_weather, 'SFC')
-        self.merge(files_path_marine, 'marine')
+        # self.merge(files_path_weather, 'SFC')
+        # self.merge(files_path_marine, 'marine')
+        self.merge(files_path_marine_depth, 'marine_depth')
 
 
 if __name__ == '__main__':
