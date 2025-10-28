@@ -1,10 +1,9 @@
 import pandas as pd
-import requests, os, time
+import requests, os, time, json
 from dotenv import load_dotenv
 from collections import defaultdict
 from datetime import datetime, timedelta
-import csv
-from io import StringIO
+
 
 class API_Request:
 
@@ -330,6 +329,49 @@ class API_Request:
         print(f'Total Run time : {elapse: .2f} sec')    
     
 
+    def request_api_marine_depth_info(self, pgn='1', nor='30', dtype='JSON', year='2025', month='08'):
+        '''
+            Request the form of each Station and its coordinate(long/lat)
+
+            param :
+                pgn : number of page request (default = 1)
+                nor : number of rows -> number of info in a page (default = 30)
+                dtype : the data type of API output (XML / JSON)
+                year : the year of request data
+                month : the month of request data
+        '''
+
+        # URL of Endpoint
+        url = 'https://apihub.kma.go.kr/api/typ02/openApi/SeaMtlyInfoService/getLhawsLstTbl?'
+        pgn_ = f'pageNo={pgn}&'
+        nor_ = f'numOfRows={nor}&'
+        dtype_ = f'dataType={dtype}&'
+        year_ = f'year={year}&'
+        month_ = f'month={month}&'
+        auth_key = f'authKey={self.api_key}'
+        request_url = url + pgn_ + nor_ + dtype_ + year_ + month_ + auth_key
+        
+        # Request API from URL
+        try:
+            response = requests.get(request_url)
+            response.raise_for_status()
+
+            data = response.json()
+            info_list = data['response']['body']['items']['item'][0]['stn_lhaws']['info']
+
+            df = pd.DataFrame(info_list)
+            df.to_csv(f'data/stn_marine_depth_info.csv', index=False, encoding='utf-8-sig')
+            print(f'Working Done')
+                
+
+
+            return True
+
+        # Exception catcher
+        except Exception as e:
+            print(f'Error detected : {e}')
+            return False
+
 
     def __init__(self):
         # Get API_key from .env
@@ -348,7 +390,8 @@ class API_Request:
         # # Run to get weather api
         # self.request_api_loop('2015-01-01','2025-10-25')
 
-        self.request_api_loop_marine('2015-01-01-14-00','2025-10-25-14-00')
+        #self.request_api_loop_marine('2024-08-09-14-00','2025-10-25-14-00')
+        self.request_api_marine_depth_info()
 
 
 if __name__ == "__main__":

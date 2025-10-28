@@ -17,9 +17,12 @@ class load_into_s3:
 
         # The file paths of data and its target directory in S3
         dirs = {
-            os.getenv('MERGED_FILE_PATH') : 'raw/merged.csv',
-            os.getenv('STN_FILE_PATH') : 'raw/stn_info.csv',
-            os.getenv('META_FILE_PATH') : 'raw/weather_meta.txt'
+            os.getenv('MERGED_FILE_SFC_PATH') : 'raw/merged_SFC.csv',
+            os.getenv('MERGED_FILE_MARINE_PATH') : 'raw/merged_marine.csv',
+            os.getenv('STN_SFC_FILE_PATH') : 'raw/stn_SFC_info.csv',
+            os.getenv('STN_BUOY_FILE_PATH') : 'raw/stn_BUOY_info.csv',
+            os.getenv('META_MARINE_PATH') : 'raw/marine_meta.txt',
+            os.getenv('META_WEATHER_PATH') : 'raw/weather_meta.txt'
         }
 
         # Connect to AWS S3 with key
