@@ -283,7 +283,10 @@ class snowflake_controller:
             copy_sql = """
                 COPY INTO RAW_DATA.surface_kor
                 FROM @my_s3_stage/merged_SFC.csv
-                FILE_FORMAT=(TYPE=CSV FIELD_OPTIONALLY_ENCLOSED_BY='"' SKIP_HEADER=1)
+                FILE_FORMAT=(TYPE=CSV 
+                FIELD_OPTIONALLY_ENCLOSED_BY='"' 
+                SKIP_HEADER=1
+                DATE_FORMAT = YYYYMMDD)
                 ON_ERROR='CONTINUE';
             """
 
@@ -305,7 +308,7 @@ class snowflake_controller:
         try:
             create_sql = """
                 CREATE OR REPLACE TABLE RAW_DATA.marine_kor (
-                    TM_KST TIMESTAMP,
+                    TM_KST DATE,
                     STN_ID INT,
                     STN_KO STRING,
                     LON_DEG FLOAT,
@@ -329,7 +332,10 @@ class snowflake_controller:
             copy_sql = """
                 COPY INTO RAW_DATA.marine_kor
                 FROM @my_s3_stage/merged_marine.csv
-                FILE_FORMAT=(TYPE=CSV FIELD_OPTIONALLY_ENCLOSED_BY='"' SKIP_HEADER=1)
+                FILE_FORMAT=(TYPE=CSV 
+                FIELD_OPTIONALLY_ENCLOSED_BY='"' 
+                SKIP_HEADER=1
+                DATE_FORMAT = YYYYMMDD)
                 ON_ERROR='CONTINUE';
             """
 
@@ -416,10 +422,10 @@ class snowflake_controller:
         '''
         try:
             create_sql = """
-                CREATE OR REPLACE TABLE ANALYTICS.SFC_TEMP_DIFF AS
+                CREATE OR REPLACE TABLE ANALYTICS.surface_kor_annualy_temperature AS
                 WITH year_tmp AS (
                     SELECT
-                        YEAR("관측시각") AS year,
+                        YEAR(TO_DATE("관측시각")) AS year,
                         AVG("최고기온") AS high_temp,
                         AVG("평균기온") AS avg_temp,
                         AVG("최저기온") AS low_temp
