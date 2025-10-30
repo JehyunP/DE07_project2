@@ -1,10 +1,9 @@
 import pandas as pd
-import requests, os, time, json
+import requests, os, time
 from dotenv import load_dotenv
 from collections import defaultdict
 from datetime import datetime, timedelta
-from dateutil.relativedelta import relativedelta
-import numpy as np
+
 
 class API_Request:
 
