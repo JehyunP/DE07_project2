@@ -430,6 +430,9 @@ class snowflake_controller:
                         AVG("평균기온") AS avg_temp,
                         AVG("최저기온") AS low_temp
                     FROM ANALYTICS.surface_kor_daily_analytics
+                    WHERE "최고기온" >= -20
+                    AND "평균기온" >= -20
+                    AND "최저기온" >= -20
                     GROUP BY 1
                     ORDER BY 1
                 )
